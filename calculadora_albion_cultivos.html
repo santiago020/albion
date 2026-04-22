@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Cultivos Albion</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f4f3ee;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .container { width: 100%; max-width: 480px; }
+    .header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
+    .header-icon {
+      width: 40px; height: 40px;
+      background: #eaf3de;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .header-icon svg { width: 22px; height: 22px; stroke: #3b6d11; fill: none; stroke-width: 2; }
+    .header h1 { font-size: 18px; font-weight: 600; color: #1a1a18; }
+    .header p { font-size: 13px; color: #888780; }
+    .card {
+      background: #fff;
+      border: 0.5px solid rgba(0,0,0,0.12);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .section-label {
+      font-size: 11px; font-weight: 600;
+      color: #888780;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-bottom: .85rem;
+    }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { font-size: 13px; color: #5f5e5a; }
+    .field input, .field select {
+      height: 38px;
+      padding: 0 10px;
+      border: 0.5px solid rgba(0,0,0,0.2);
+      border-radius: 8px;
+      background: #fff;
+      color: #1a1a18;
+      font-size: 14px;
+      width: 100%;
+      outline: none;
+      transition: box-shadow .15s;
+    }
+    .field input:focus, .field select:focus {
+      box-shadow: 0 0 0 2.5px #b5d4f4;
+      border-color: #378add;
+    }
+    .checkbox-row { display: flex; align-items: center; gap: 8px; padding: .6rem 0 .1rem; }
+    .checkbox-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: #3b6d11; }
+    .checkbox-row label { font-size: 14px; color: #1a1a18; cursor: pointer; }
+    .bonus-badge {
+      font-size: 11px;
+      background: #eaf3de;
+      color: #3b6d11;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-left: 4px;
+      font-weight: 600;
+    }
+    .calc-btn {
+      width: 100%; height: 42px;
+      background: #fff;
+      border: 0.5px solid rgba(0,0,0,0.2);
+      border-radius: 10px;
+      font-size: 14px; font-weight: 500;
+      color: #1a1a18;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .calc-btn:hover { background: #f4f3ee; }
+    .calc-btn:active { transform: scale(.98); }
+    .results { display: none; margin-top: 1rem; }
+    .results.show { display: block; }
+    .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .metric { background: #f4f3ee; border-radius: 8px; padding: 1rem; }
+    .metric .m-label { font-size: 12px; color: #888780; margin-bottom: 4px; }
+    .metric .m-value { font-size: 21px; font-weight: 600; color: #1a1a18; }
+    .metric.pos .m-value { color: #3b6d11; }
+    .metric.neg .m-value { color: #a32d2d; }
+    .metric.income .m-value { color: #185fa5; }
+    .divider { height: 0.5px; background: rgba(0,0,0,0.1); margin: 1rem 0; }
+    .detail-row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; }
+    .detail-row span:first-child { color: #888780; }
+    .detail-row span:last-child { font-weight: 500; color: #1a1a18; }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1c1c1a; }
+      .card { background: #2c2c2a; border-color: rgba(255,255,255,0.1); }
+      .header h1 { color: #f1efe8; }
+      .header p { color: #888780; }
+      .field label { color: #b4b2a9; }
+      .field input, .field select {
+        background: #2c2c2a; color: #f1efe8;
+        border-color: rgba(255,255,255,0.15);
+      }
+      .checkbox-row label { color: #f1efe8; }
+      .calc-btn { background: #2c2c2a; color: #f1efe8; border-color: rgba(255,255,255,0.15); }
+      .calc-btn:hover { background: #444441; }
+      .metric { background: #444441; }
+      .metric .m-value { color: #f1efe8; }
+      .metric .m-label { color: #b4b2a9; }
+      .detail-row span:last-child { color: #f1efe8; }
+      .divider { background: rgba(255,255,255,0.1); }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+        <path d="M7 13s.5-4 5-4 5 4 5 4"/>
+        <circle cx="12" cy="17" r="1" fill="#3b6d11" stroke="none"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Cultivos Albion</h1>
+      <p>Calculadora de ganancia por parcela</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <p class="section-label">Configuración del cultivo</p>
+    <div class="field-grid">
+      <div class="field full">
+        <label for="cultivo">Tipo de cultivo</label>
+        <select id="cultivo">
+          <option value="0.3333,75">Frijoles</option>
+          <option value="0.60,125">Trigo</option>
+          <option value="0.7333,190">Rábano</option>
+          <option value="0.80,250">Col</option>
+          <option value="0.8667,370">Papa</option>
+          <option value="0.9111,550">Maíz</option>
+          <option value="0.9333,800">Calabaza</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="P">Parcelas</label>
+        <input type="number" id="P" placeholder="ej. 100" min="1">
+      </div>
+      <div class="field">
+        <label for="Pc">Precio cultivo</label>
+        <input type="number" id="Pc" placeholder="precio/u">
+      </div>
+      <div class="field full">
+        <label for="Ps">Precio semilla</label>
+        <input type="number" id="Ps" placeholder="precio/u">
+      </div>
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="bonus">
+      <label for="bonus">Bono de ciudad <span class="bonus-badge">+10%</span></label>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calcular()">Calcular ganancia</button>
+
+  <div class="results" id="results">
+    <div class="card" style="margin-top:1rem;margin-bottom:0">
+      <p class="section-label">Resultado</p>
+      <div class="metric-grid">
+        <div class="metric" id="m-ganancia">
+          <p class="m-label">Ganancia neta</p>
+          <p class="m-value" id="v-ganancia">—</p>
+        </div>
+        <div class="metric income">
+          <p class="m-label">Ingreso bruto</p>
+          <p class="m-value" id="v-ingreso">—</p>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="detail-row"><span>Costo de semillas</span><span id="v-costo">—</span></div>
+      <div class="detail-row"><span>Parcelas con foco (10k)</span><span id="v-foco">—</span></div>
+      <div class="detail-row"><span>Semillas recuperadas</span><span id="v-semillas">—</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function fmt(n) {
+  return Math.round(n).toLocaleString('es-CO');
+}
+
+function calcular() {
+  var cultivo = document.getElementById("cultivo").value.split(",");
+  var D = parseFloat(cultivo[0]);
+  var Fpp = parseFloat(cultivo[1]);
+  var P = parseFloat(document.getElementById("P").value);
+  var Pc = parseFloat(document.getElementById("Pc").value);
+  var Ps = parseFloat(document.getElementById("Ps").value);
+  var bonus = document.getElementById("bonus").checked;
+
+  if (isNaN(P) || isNaN(Pc) || isNaN(Ps) || P <= 0 || Pc <= 0 || Ps <= 0) return;
+
+  var foco_total = 10000;
+  var P_foco = Math.min(P, foco_total / Fpp);
+  var semillas_base = P * D;
+  var extra = 1 / (foco_total / Fpp);
+  var semillas_extra = P_foco * extra;
+  var semillas_total = semillas_base + semillas_extra;
+  var perdida = P - semillas_total;
+  var costo = perdida * Ps;
+  var ingreso = Pc * P;
+  if (bonus) ingreso = ingreso * 1.10;
+  var ganancia = ingreso - costo;
+
+  document.getElementById("v-ganancia").textContent = fmt(ganancia) + " plata";
+  document.getElementById("v-ingreso").textContent = fmt(ingreso) + " plata";
+  document.getElementById("v-costo").textContent = fmt(costo) + " plata";
+  document.getElementById("v-foco").textContent = Math.floor(P_foco) + " parcelas";
+  document.getElementById("v-semillas").textContent = fmt(semillas_total) + " semillas";
+
+  var mg = document.getElementById("m-ganancia");
+  mg.classList.remove("pos", "neg");
+  mg.classList.add(ganancia >= 0 ? "pos" : "neg");
+
+  document.getElementById("results").classList.add("show");
+}
+</script>
+</body>
+</html>
