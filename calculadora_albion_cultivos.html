@@ -1,153 +1,118 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculadora Cultivos Albion</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #f4f3ee;
-      min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 2rem 1rem;
-    }
-    .container { width: 100%; max-width: 480px; }
-    .header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
-    .header-icon {
-      width: 40px; height: 40px;
-      background: #eaf3de;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .header-icon svg { width: 22px; height: 22px; stroke: #3b6d11; fill: none; stroke-width: 2; }
-    .header h1 { font-size: 18px; font-weight: 600; color: #1a1a18; }
-    .header p { font-size: 13px; color: #888780; }
-    .card {
-      background: #fff;
-      border: 0.5px solid rgba(0,0,0,0.12);
-      border-radius: 14px;
-      padding: 1.25rem;
-      margin-bottom: 1rem;
-    }
-    .section-label {
-      font-size: 11px; font-weight: 600;
-      color: #888780;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      margin-bottom: .85rem;
-    }
-    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .field { display: flex; flex-direction: column; gap: 4px; }
-    .field.full { grid-column: 1 / -1; }
-    .field label { font-size: 13px; color: #5f5e5a; }
-    .field input, .field select {
-      height: 38px;
-      padding: 0 10px;
-      border: 0.5px solid rgba(0,0,0,0.2);
-      border-radius: 8px;
-      background: #fff;
-      color: #1a1a18;
-      font-size: 14px;
-      width: 100%;
-      outline: none;
-      transition: box-shadow .15s;
-    }
-    .field input:focus, .field select:focus {
-      box-shadow: 0 0 0 2.5px #b5d4f4;
-      border-color: #378add;
-    }
-    .checkbox-row { display: flex; align-items: center; gap: 8px; padding: .6rem 0 .1rem; }
-    .checkbox-row input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; accent-color: #3b6d11; }
-    .checkbox-row label { font-size: 14px; color: #1a1a18; cursor: pointer; }
-    .bonus-badge {
-      font-size: 11px;
-      background: #eaf3de;
-      color: #3b6d11;
-      padding: 2px 8px;
-      border-radius: 99px;
-      margin-left: 4px;
-      font-weight: 600;
-    }
-    .calc-btn {
-      width: 100%; height: 42px;
-      background: #fff;
-      border: 0.5px solid rgba(0,0,0,0.2);
-      border-radius: 10px;
-      font-size: 14px; font-weight: 500;
-      color: #1a1a18;
-      cursor: pointer;
-      transition: background .15s, transform .1s;
-    }
-    .calc-btn:hover { background: #f4f3ee; }
-    .calc-btn:active { transform: scale(.98); }
-    .results { display: none; margin-top: 1rem; }
-    .results.show { display: block; }
-    .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .metric { background: #f4f3ee; border-radius: 8px; padding: 1rem; }
-    .metric .m-label { font-size: 12px; color: #888780; margin-bottom: 4px; }
-    .metric .m-value { font-size: 21px; font-weight: 600; color: #1a1a18; }
-    .metric.pos .m-value { color: #3b6d11; }
-    .metric.neg .m-value { color: #a32d2d; }
-    .metric.income .m-value { color: #185fa5; }
-    .divider { height: 0.5px; background: rgba(0,0,0,0.1); margin: 1rem 0; }
-    .detail-row { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; }
-    .detail-row span:first-child { color: #888780; }
-    .detail-row span:last-child { font-weight: 500; color: #1a1a18; }
-
-    @media (prefers-color-scheme: dark) {
-      body { background: #1c1c1a; }
-      .card { background: #2c2c2a; border-color: rgba(255,255,255,0.1); }
-      .header h1 { color: #f1efe8; }
-      .header p { color: #888780; }
-      .field label { color: #b4b2a9; }
-      .field input, .field select {
-        background: #2c2c2a; color: #f1efe8;
-        border-color: rgba(255,255,255,0.15);
-      }
-      .checkbox-row label { color: #f1efe8; }
-      .calc-btn { background: #2c2c2a; color: #f1efe8; border-color: rgba(255,255,255,0.15); }
-      .calc-btn:hover { background: #444441; }
-      .metric { background: #444441; }
-      .metric .m-value { color: #f1efe8; }
-      .metric .m-label { color: #b4b2a9; }
-      .detail-row span:last-child { color: #f1efe8; }
-      .divider { background: rgba(255,255,255,0.1); }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Cultivos Albion</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#f4f3ee;min-height:100vh;padding:2rem 1rem;display:flex;justify-content:center}
+.container{width:100%;max-width:500px}
+.header{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem}
+.logo{width:42px;height:42px;background:#eaf3de;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo svg{width:24px;height:24px;stroke:#3b6d11;fill:none;stroke-width:1.8}
+.header h1{font-size:19px;font-weight:600;color:#1a1a18}
+.header p{font-size:13px;color:#888780;margin-top:1px}
+.card{background:#fff;border:0.5px solid rgba(0,0,0,0.11);border-radius:14px;padding:1.25rem;margin-bottom:.85rem}
+.slabel{font-size:11px;font-weight:600;color:#888780;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.85rem}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{display:flex;flex-direction:column;gap:4px}
+.field.full{grid-column:1/-1}
+.field label{font-size:13px;color:#5f5e5a}
+.field input,.field select{height:38px;padding:0 10px;border:0.5px solid rgba(0,0,0,0.18);border-radius:8px;background:#fff;color:#1a1a18;font-size:14px;width:100%;outline:none;transition:box-shadow .15s,border-color .15s}
+.field input:focus,.field select:focus{box-shadow:0 0 0 2.5px #b5d4f4;border-color:#378add}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0 .1rem}
+.toggle-row span.tl{font-size:14px;color:#1a1a18;display:flex;align-items:center;gap:6px}
+.badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px}
+.badge.green{background:#eaf3de;color:#3b6d11}
+.badge.blue{background:#e6f1fb;color:#185fa5}
+.toggle{position:relative;width:38px;height:22px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.tslider{position:absolute;inset:0;background:#d3d1c7;border-radius:99px;cursor:pointer;transition:background .2s}
+.tslider:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .2s}
+.toggle input:checked+.tslider{background:#3b6d11}
+.toggle input:checked+.tslider:before{transform:translateX(16px)}
+.btn{width:100%;height:42px;background:#fff;border:0.5px solid rgba(0,0,0,0.18);border-radius:10px;font-size:14px;font-weight:500;color:#1a1a18;cursor:pointer;transition:background .15s,transform .1s}
+.btn:hover{background:#f4f3ee}
+.btn:active{transform:scale(.98)}
+.results{display:none}
+.results.show{display:block}
+.mcard{background:#f4f3ee;border-radius:10px;padding:.9rem 1rem}
+.mcard .ml{font-size:12px;color:#888780;margin-bottom:3px}
+.mcard .mv{font-size:22px;font-weight:600;color:#1a1a18}
+.mcard.green .mv{color:#3b6d11}
+.mcard.red .mv{color:#a32d2d}
+.mcard.blue .mv{color:#185fa5}
+.mcard.amber .mv{color:#854f0b}
+.divider{height:.5px;background:rgba(0,0,0,0.09);margin:.9rem 0}
+.row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:4px 0}
+.row .rl{color:#888780}
+.row .rv{font-weight:500;color:#1a1a18}
+.highlight-row{background:#f4f3ee;border-radius:8px;padding:6px 10px;margin:4px 0}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:.85rem}
+.cbox{border:0.5px solid rgba(0,0,0,0.11);border-radius:12px;padding:1rem;background:#fff}
+.cbox.winner{border:1.5px solid #3b6d11;background:#f9fcf6}
+.cbox .ctag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;margin-bottom:.5rem;display:inline-block}
+.cbox.winner .ctag{background:#eaf3de;color:#3b6d11}
+.cbox:not(.winner) .ctag{background:#f4f3ee;color:#888780}
+.cbox .ctitle{font-size:13px;color:#5f5e5a;margin-bottom:.35rem}
+.cbox .cval{font-size:20px;font-weight:600}
+.cbox.winner .cval{color:#3b6d11}
+.cbox:not(.winner) .cval{color:#888780}
+.decision{display:flex;align-items:flex-start;gap:10px;padding:.75rem 1rem;border-radius:10px;margin-top:.85rem;font-size:13px;font-weight:500;line-height:1.5}
+.decision.yes{background:#eaf3de;color:#3b6d11}
+.decision.no{background:#fcebeb;color:#a32d2d}
+.decision.same{background:#e6f1fb;color:#185fa5}
+.decision .dicon{font-size:16px;flex-shrink:0;margin-top:1px}
+@media(prefers-color-scheme:dark){
+  body{background:#1c1c1a}
+  .card{background:#2c2c2a;border-color:rgba(255,255,255,.1)}
+  .field input,.field select{background:#2c2c2a;color:#f1efe8;border-color:rgba(255,255,255,.15)}
+  .btn{background:#2c2c2a;color:#f1efe8;border-color:rgba(255,255,255,.15)}
+  .btn:hover{background:#444441}
+  .header h1{color:#f1efe8}
+  .mcard{background:#444441}
+  .mcard .mv{color:#f1efe8}
+  .row .rv{color:#f1efe8}
+  .highlight-row{background:#444441}
+  .cbox{background:#2c2c2a;border-color:rgba(255,255,255,.1)}
+  .cbox.winner{background:#1e2e1e;border-color:#3b6d11}
+  .cbox:not(.winner) .cval{color:#b4b2a9}
+  .divider{background:rgba(255,255,255,.1)}
+  .toggle-row span.tl{color:#f1efe8}
+  .field label{color:#b4b2a9}
+  .cbox .ctitle{color:#b4b2a9}
+}
+</style>
 </head>
 <body>
 <div class="container">
+
   <div class="header">
-    <div class="header-icon">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
-        <path d="M7 13s.5-4 5-4 5 4 5 4"/>
-        <circle cx="12" cy="17" r="1" fill="#3b6d11" stroke="none"/>
-      </svg>
+    <div class="logo">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5-3 4-3 4 3 4 3" stroke-linecap="round"/><path d="M9 9h.01M15 9h.01" stroke-linecap="round" stroke-width="2.5"/></svg>
     </div>
     <div>
       <h1>Cultivos Albion</h1>
-      <p>Calculadora de ganancia por parcela</p>
+      <p>Ganancia, foco y semillas recuperadas</p>
     </div>
   </div>
 
+  <!-- Cultivo -->
   <div class="card">
-    <p class="section-label">Configuración del cultivo</p>
-    <div class="field-grid">
+    <p class="slabel">Cultivo</p>
+    <div class="grid2">
       <div class="field full">
         <label for="cultivo">Tipo de cultivo</label>
+        <!-- value = "D,Fpp,M"  (devolución base, foco/parcela, multiplicador foco) -->
         <select id="cultivo">
-          <option value="0.3333,75">Frijoles</option>
-          <option value="0.60,125">Trigo</option>
-          <option value="0.7333,190">Rábano</option>
-          <option value="0.80,250">Col</option>
-          <option value="0.8667,370">Papa</option>
-          <option value="0.9111,550">Maíz</option>
-          <option value="0.9333,800">Calabaza</option>
+          <option value="0.3333,75,1.33">Frijoles — Dev. 33%</option>
+          <option value="0.60,125,1.00">Trigo — Dev. 60%</option>
+          <option value="0.7333,190,0.73">Rábano — Dev. 73%</option>
+          <option value="0.80,250,0.40">Col — Dev. 80%</option>
+          <option value="0.8667,370,0.27">Papa — Dev. 87%</option>
+          <option value="0.9111,550,0.18">Maíz — Dev. 91%</option>
+          <option value="0.9333,800,0.13">Calabaza — Dev. 93%</option>
         </select>
       </div>
       <div class="field">
@@ -156,79 +121,205 @@
       </div>
       <div class="field">
         <label for="Pc">Precio cultivo</label>
-        <input type="number" id="Pc" placeholder="precio/u">
+        <input type="number" id="Pc" placeholder="plata/u">
       </div>
       <div class="field full">
         <label for="Ps">Precio semilla</label>
-        <input type="number" id="Ps" placeholder="precio/u">
+        <input type="number" id="Ps" placeholder="plata/u">
       </div>
-    </div>
-    <div class="checkbox-row">
-      <input type="checkbox" id="bonus">
-      <label for="bonus">Bono de ciudad <span class="bonus-badge">+10%</span></label>
     </div>
   </div>
 
-  <button class="calc-btn" onclick="calcular()">Calcular ganancia</button>
+  <!-- Opciones -->
+  <div class="card">
+    <p class="slabel">Opciones</p>
+    <div class="toggle-row">
+      <span class="tl">Bono de ciudad <span class="badge green">+10%</span></span>
+      <label class="toggle"><input type="checkbox" id="bonus"><span class="tslider"></span></label>
+    </div>
+    <div class="toggle-row" style="margin-top:8px">
+      <span class="tl">Usar foco <span class="badge blue">10 000 / día</span></span>
+      <label class="toggle"><input type="checkbox" id="usarFoco" checked><span class="tslider"></span></label>
+    </div>
+  </div>
 
-  <div class="results" id="results">
-    <div class="card" style="margin-top:1rem;margin-bottom:0">
-      <p class="section-label">Resultado</p>
-      <div class="metric-grid">
-        <div class="metric" id="m-ganancia">
-          <p class="m-label">Ganancia neta</p>
-          <p class="m-value" id="v-ganancia">—</p>
+  <button class="btn" onclick="calcular()">Calcular ganancia</button>
+
+  <!-- Resultados -->
+  <div class="results" id="results" style="margin-top:.85rem">
+
+    <div class="card">
+      <p class="slabel">Resultado principal</p>
+      <div class="grid2">
+        <div class="mcard" id="mc-gan">
+          <p class="ml">Ganancia neta</p>
+          <p class="mv" id="v-gan">—</p>
         </div>
-        <div class="metric income">
-          <p class="m-label">Ingreso bruto</p>
-          <p class="m-value" id="v-ingreso">—</p>
+        <div class="mcard blue">
+          <p class="ml">Ingreso bruto</p>
+          <p class="mv" id="v-ing">—</p>
+        </div>
+        <div class="mcard" style="grid-column:1/-1" id="mc-cos">
+          <p class="ml">Costo semillas faltantes</p>
+          <p class="mv" id="v-cos">—</p>
         </div>
       </div>
       <div class="divider"></div>
-      <div class="detail-row"><span>Costo de semillas</span><span id="v-costo">—</span></div>
-      <div class="detail-row"><span>Parcelas con foco (10k)</span><span id="v-foco">—</span></div>
-      <div class="detail-row"><span>Semillas recuperadas</span><span id="v-semillas">—</span></div>
+      <div class="row"><span class="rl">Semillas recuperadas</span><span class="rv" id="v-sem">—</span></div>
+      <div class="row"><span class="rl">Semillas faltantes</span><span class="rv" id="v-fal">—</span></div>
+      <div class="row"><span class="rl">Dev. efectiva por parcela</span><span class="rv" id="v-dev">—</span></div>
+      <div class="row" id="row-foco" style="display:none">
+        <span class="rl">Parcelas regadas con foco</span>
+        <span class="rv" id="v-pfoco">—</span>
+      </div>
+      <div id="row-para100" style="display:none">
+        <div class="divider"></div>
+        <div class="row highlight-row">
+          <span class="rl">Parcelas a regar para recuperar 100% semillas</span>
+          <span class="rv" id="v-para100">—</span>
+        </div>
+      </div>
     </div>
+
+    <!-- Comparación foco vs sin foco -->
+    <div class="card">
+      <p class="slabel">¿Vale la pena el foco?</p>
+      <div class="cmp">
+        <div class="cbox" id="box-con">
+          <span class="ctag">Con foco</span>
+          <p class="ctitle">Ganancia</p>
+          <p class="cval" id="v-cfoco">—</p>
+        </div>
+        <div class="cbox" id="box-sin">
+          <span class="ctag">Sin foco</span>
+          <p class="ctitle">Ganancia</p>
+          <p class="cval" id="v-sfoco">—</p>
+        </div>
+      </div>
+      <div class="decision" id="decision">
+        <span class="dicon" id="d-icon"></span>
+        <span id="d-text"></span>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <script>
-function fmt(n) {
-  return Math.round(n).toLocaleString('es-CO');
+function fmt(n){return Math.round(n).toLocaleString('es-CO')}
+function fmtDec(n){return (Math.round(n*1000)/10).toFixed(1)+"%"}
+
+/*
+  Cada parcela consume 1 semilla al plantar.
+  Ganancia = Ingreso - (semillas_faltantes × Ps)
+  semillas_faltantes = P - semillas_recuperadas
+
+  Con foco (10 000 puntos/día):
+    P_foco = min(P, 10000/Fpp)          — parcelas que alcanza a regar
+    D_foco = D × (1 + M)                — devolución con foco aplicado
+    semillas = P_foco × D_foco + (P - P_foco) × D
+
+  Para recuperar exactamente P semillas (100% break-even) con foco:
+    P_foco_100 = (P - P×D) / (D_foco - D)
+    = P×(1-D) / (D×M)
+*/
+
+function calcSin(P,D,Pc,Ps,bonus){
+  var sem=P*D;
+  var fal=P-sem;
+  var cos=fal*Ps;
+  var ing=P*Pc*(bonus?1.1:1);
+  return{gan:ing-cos, ing:ing, cos:cos, sem:sem, fal:fal, dev:D};
 }
 
-function calcular() {
-  var cultivo = document.getElementById("cultivo").value.split(",");
-  var D = parseFloat(cultivo[0]);
-  var Fpp = parseFloat(cultivo[1]);
-  var P = parseFloat(document.getElementById("P").value);
-  var Pc = parseFloat(document.getElementById("Pc").value);
-  var Ps = parseFloat(document.getElementById("Ps").value);
-  var bonus = document.getElementById("bonus").checked;
+function calcCon(P,D,Fpp,M,Pc,Ps,bonus){
+  var foco=10000;
+  var pf=Math.min(P, foco/Fpp);           // parcelas que puedo regar
+  var Df=D*(1+M);                          // devolución con foco
+  var sem=pf*Df + (P-pf)*D;               // total semillas recuperadas
+  var fal=Math.max(0, P-sem);
+  var cos=fal*Ps;
+  var ing=P*Pc*(bonus?1.1:1);
+  var devEf=sem/P;                         // devolución efectiva promedio
+  // parcelas a regar para recuperar exactamente P semillas:
+  // necesito pf100 tal que: pf100×Df + (P-pf100)×D = P
+  // pf100 = P(1-D)/(D×M)
+  var pf100=(D*M>0) ? (P*(1-D))/(D*M) : Infinity;
+  return{gan:ing-cos, ing:ing, cos:cos, sem:sem, fal:fal, dev:devEf, pf:pf, pf100:pf100, Df:Df};
+}
 
-  if (isNaN(P) || isNaN(Pc) || isNaN(Ps) || P <= 0 || Pc <= 0 || Ps <= 0) return;
+function calcular(){
+  var parts=document.getElementById("cultivo").value.split(",");
+  var D=parseFloat(parts[0]);
+  var Fpp=parseFloat(parts[1]);
+  var M=parseFloat(parts[2]);
+  var P=parseFloat(document.getElementById("P").value);
+  var Pc=parseFloat(document.getElementById("Pc").value);
+  var Ps=parseFloat(document.getElementById("Ps").value);
+  var bonus=document.getElementById("bonus").checked;
+  var usarFoco=document.getElementById("usarFoco").checked;
+  if(isNaN(P)||isNaN(Pc)||isNaN(Ps)||P<=0||Pc<=0||Ps<=0) return;
 
-  var foco_total = 10000;
-  var P_foco = Math.min(P, foco_total / Fpp);
-  var semillas_base = P * D;
-  var extra = 1 / (foco_total / Fpp);
-  var semillas_extra = P_foco * extra;
-  var semillas_total = semillas_base + semillas_extra;
-  var perdida = P - semillas_total;
-  var costo = perdida * Ps;
-  var ingreso = Pc * P;
-  if (bonus) ingreso = ingreso * 1.10;
-  var ganancia = ingreso - costo;
+  var cf=calcCon(P,D,Fpp,M,Pc,Ps,bonus);
+  var sf=calcSin(P,D,Pc,Ps,bonus);
+  var m=usarFoco?cf:sf;
 
-  document.getElementById("v-ganancia").textContent = fmt(ganancia) + " plata";
-  document.getElementById("v-ingreso").textContent = fmt(ingreso) + " plata";
-  document.getElementById("v-costo").textContent = fmt(costo) + " plata";
-  document.getElementById("v-foco").textContent = Math.floor(P_foco) + " parcelas";
-  document.getElementById("v-semillas").textContent = fmt(semillas_total) + " semillas";
+  // Resumen principal
+  document.getElementById("v-gan").textContent=fmt(m.gan)+" plata";
+  document.getElementById("v-ing").textContent=fmt(m.ing)+" plata";
+  document.getElementById("v-cos").textContent=fmt(m.cos)+" plata";
+  document.getElementById("v-sem").textContent=fmt(m.sem)+" semillas";
+  document.getElementById("v-fal").textContent=fmt(m.fal)+" semillas";
+  document.getElementById("v-dev").textContent=fmtDec(m.dev);
 
-  var mg = document.getElementById("m-ganancia");
-  mg.classList.remove("pos", "neg");
-  mg.classList.add(ganancia >= 0 ? "pos" : "neg");
+  var mcg=document.getElementById("mc-gan");
+  mcg.classList.remove("green","red");
+  mcg.classList.add(m.gan>=0?"green":"red");
+
+  var mcc=document.getElementById("mc-cos");
+  mcc.classList.remove("amber");
+  if(m.cos>0) mcc.classList.add("amber");
+
+  // Fila parcelas regadas
+  var rf=document.getElementById("row-foco");
+  var r100=document.getElementById("row-para100");
+  if(usarFoco){
+    rf.style.display="flex";
+    document.getElementById("v-pfoco").textContent=Math.floor(cf.pf)+" / "+Math.round(P)+" parcelas";
+    r100.style.display="block";
+    if(cf.pf100<=P){
+      document.getElementById("v-para100").textContent=
+        Math.ceil(cf.pf100)+" parcelas (tienes foco para "+Math.floor(cf.pf)+")";
+    } else {
+      document.getElementById("v-para100").textContent=
+        "Necesitas "+Math.ceil(cf.pf100)+" — foco insuficiente (solo alcanza "+Math.floor(cf.pf)+")";
+    }
+  } else {
+    rf.style.display="none";
+    r100.style.display="none";
+  }
+
+  // Comparación
+  document.getElementById("v-cfoco").textContent=fmt(cf.gan)+" plata";
+  document.getElementById("v-sfoco").textContent=fmt(sf.gan)+" plata";
+  var bc=document.getElementById("box-con");
+  var bs=document.getElementById("box-sin");
+  var dec=document.getElementById("decision");
+  var di=document.getElementById("d-icon");
+  var dt=document.getElementById("d-text");
+  bc.classList.remove("winner"); bs.classList.remove("winner");
+  dec.classList.remove("yes","no","same");
+  var diff=cf.gan-sf.gan;
+  if(Math.abs(diff)<1){
+    dec.classList.add("same"); di.textContent="≈";
+    dt.textContent="El foco no hace diferencia económica en este caso.";
+  } else if(diff>0){
+    bc.classList.add("winner"); dec.classList.add("yes"); di.textContent="✓";
+    dt.textContent="Conviene usar foco — ganas "+fmt(diff)+" plata extra. Dev. con foco: "+fmtDec(cf.Df)+".";
+  } else {
+    bs.classList.add("winner"); dec.classList.add("no"); di.textContent="✗";
+    dt.textContent="No conviene usar foco — ahorras "+fmt(-diff)+" plata sin gastar el foco aquí.";
+  }
 
   document.getElementById("results").classList.add("show");
 }
